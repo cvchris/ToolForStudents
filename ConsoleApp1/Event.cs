@@ -16,11 +16,29 @@ namespace WpfApp1
 
         public DayOfWeek Day { get; set; }
 
-        public Boolean isFixed { get; set; }
+        public bool IsFixed { get; set; }
 
 
         public DateTime startTime { get; set; }
         public DateTime finishTime { get; set; }
+
+        /// <summary>
+        /// Returns true if two events are conflicting with each other
+        /// </summary>
+        /// <param name="ev"></param>
+        /// <returns></returns>
+        public bool Conflicts(Event ev)
+        {
+            if (this.Day != ev.Day)
+                return false;
+
+            //two ways of conflicting: if (a.finishtime > b.starttime) or (a.starttime < b.finishtime)
+            if (this.startTime < ev.finishTime || this.finishTime > ev.startTime)
+                return true;
+
+            return false;
+        }
+
     }
 
    

@@ -5,6 +5,9 @@ using WpfApp1;
 
 namespace ConsoleApp1
 {
+    /// <summary>
+    /// Class that we will need to calculate which Events to remove
+    /// </summary>
     public class TimeCalculate
     {
         public Event Event { get; set; }

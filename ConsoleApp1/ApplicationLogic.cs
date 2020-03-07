@@ -11,7 +11,7 @@ namespace ConsoleApp1
         private static List<Event> _allEvents;
 
         //roundTripWeight = the time to go to the university and back. (We assume that this will be done once a day).
-        public static void Logic(List<Event> mandatoryEvents, List<LessonWithMultipleTimes> lessonsWithMultipleTimes,double roundTripWeight)
+        public static void Logic(List<Event> mandatoryEvents, List<LessonWithMultipleTimes> lessonsWithMultipleTimes, double roundTripWeight)
         {
             List<Event> allEvents = new List<Event>();
             allEvents.AddRange(mandatoryEvents);
@@ -24,19 +24,19 @@ namespace ConsoleApp1
             //check for all overlapping events. if an non-fixed event has multiple occasions and one occasion is at the same time as one fixed, we should delete it from allEvents.
             //also if the non-fixed event has only one occassion (LessonWithMultipleETimes.Events.Count =1), and this is overlapping with a fixed event, log warning that there is no way that you can go to both
             checkForOverlapping();
-            
 
-            var notFixed = allEvents.Where(x => x.isFixed = false); //all the not fixed events
+
+            var notFixed = allEvents.Where(x => x.IsFixed = false); //all the not fixed events
 
             List<TimeCalculate> times = new List<TimeCalculate>();
 
             foreach (var notFixedEvent in notFixed)
             {
                 //search in allnonfixed if this is the only one with that lessonId. (if it is then automatically add it to final list- make it fixed)
-                if(notFixed.Where(x=> x.Lesson == notFixedEvent.Lesson).ToList().Count == 1)
+                if (notFixed.Where(x => x.Lesson == notFixedEvent.Lesson).ToList().Count == 1)
                 {
                     //it may not be updated in the allEvents
-                    notFixedEvent.isFixed = true; //we may need to mark it in another way
+                    notFixedEvent.IsFixed = true; //we may need to mark it in another way
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace ConsoleApp1
                     //Also don't forget about dependencies
                     for (int i = 0; i < sameDayEvents.Count; i++)
                     {
-                        if(sameDayEvents[i] != thisEvent && sameDayEvents[i].Lesson == thisEvent.Lesson)
+                        if (sameDayEvents[i] != thisEvent && sameDayEvents[i].Lesson == thisEvent.Lesson)
                         {
                             //ignore it
                         }
@@ -77,7 +77,7 @@ namespace ConsoleApp1
                                 var afterEvent = sameDayEvents[i + tempvalue];
                                 xronospetamenos += (afterEvent.startTime - notFixedEvent.finishTime).TotalMinutes;
 
-                                if (!afterEvent.isFixed) //&& samedayevents[i].isFixed
+                                if (!afterEvent.IsFixed) //&& samedayevents[i].isFixed
                                 {
                                     //add dependency
                                     time.AfterEventDependency = afterEvent;
@@ -94,7 +94,7 @@ namespace ConsoleApp1
 
                         }
                     }
-                    
+
 
                     //int index = sameDayEvents.IndexOf(thisEvent);
                     //int tempvalue = 1;
@@ -102,7 +102,7 @@ namespace ConsoleApp1
                     //{
                     //    tempvalue++;
                     //}
-                    
+
                     //if(index-tempvalue>=0 )//meaning that we didn't reach the top of the list
                     //{
                     //    var beforeEvent = sameDayEvents[index - tempvalue];
@@ -177,80 +177,51 @@ namespace ConsoleApp1
                 //σωστος τροπος: για καθε event στην ημερα, τσεκαρε με ΟΛΑ τα υπολοιπα events εαν γίνεται καποιο overlapping... ισως ενας τροπος optimization είναι να μην κοιταει με τα προηγουμενα του (να το σιγουρεψω).
 
                 //check for overlapping
-                for (int i = 0; i < allEventsInSpecificDay.Count - 1; i++)
+                for (int i = 0; i < allEventsInSpecificDay.Count; i++)
                 {
-
-                }
-
-                /* old way, has bug
-
-                //check for overlapping
-                for (int i = 0; i < allEventsInSpecificDay.Count -1; i++)
-                {
-                    if(allEventsInSpecificDay[i].finishTime>allEventsInSpecificDay[i+1].startTime)
+                    foreach (var ev in allEventsInSpecificDay)
                     {
-                        int howManyCannotBeDeleted = 0;
-
-                        //check if either of them is non-fixed
-                        if(allEventsInSpecificDay[i].isFixed && allEventsInSpecificDay[i+1].isFixed)
+                        if (ev != allEventsInSpecificDay[i]) //we don't want to check with itself
                         {
-                            throw new Exception("We have a problem because both are fixed.");
-                        }
-
-                        if (!allEventsInSpecificDay[i].isFixed && !allEventsInSpecificDay[i+1].isFixed)
-                        {
-                            //both not fixed, find which is optimal to delete from the two
-                        }
-
-
-
-                        if(!allEventsInSpecificDay[i].isFixed)
-                        {
-                            //check if this event has another appearence
-                            var otherEventsFromSameLesson = _allEvents.Where(x => x.Lesson == allEventsInSpecificDay[i].Lesson).ToList();
-                            if(otherEventsFromSameLesson.Count > 1)
+                            if (ev.Conflicts(allEventsInSpecificDay[i]))
                             {
-                                //check if the other ones are overlapping?
-                                //for now we will just delete this event because it is not required
-                                _allEvents.Remove(_allEvents.Single(x => x.Id == allEventsInSpecificDay[i].Id));
-                            }
-                            else
-                            {
-                                //this event cannot be deleted because there are not other options
-                                howManyCannotBeDeleted++;
-                                
-                            }
-                        }
-                        
-                        if(!allEventsInSpecificDay[i+1].isFixed)
-                        {
-                            //check if this event has another appearence
-                            var otherEventsFromSameLesson = _allEvents.Where(x => x.Lesson == allEventsInSpecificDay[i+1].Lesson).ToList();
-                            if (otherEventsFromSameLesson.Count > 1)
-                            {
-                                //check if the other ones are overlapping?
-                                //for now we will just delete this event because it is not required
-                                _allEvents.Remove(_allEvents.Single(x => x.Id == allEventsInSpecificDay[i+1].Id));
-                            }
-                            else
-                            {
-                                howManyCannotBeDeleted++;
-                            }
-                        }
+                                //ev and allEventsInSpecificDay[i] conflict.
 
-                        if(howManyCannotBeDeleted ==2)
-                        {
-                            throw new Exception("We have a problem, both that are overlapping are not fixed.");
+
+                                //check if either of them is non-fixed
+                                if (allEventsInSpecificDay[i].IsFixed && ev.IsFixed)
+                                {
+                                    throw new Exception("We have a problem because both are fixed.");
+                                }
+                                else
+                                {
+                                    if (!allEventsInSpecificDay[i].IsFixed && !ev.IsFixed)
+                                    {
+                                        //TODO: both not fixed, find which is optimal to delete from the two
+                                    }
+
+                                    bool wasDeletedA = false;
+                                    if (!allEventsInSpecificDay[i].IsFixed)
+                                    {
+                                        wasDeletedA = deleteIfNoProblem(allEventsInSpecificDay[i].Id);
+                                    }
+
+                                    bool wasDeletedB = false;
+                                    if (!ev.IsFixed && !wasDeletedA) //meaning that the other one wasn't deleted. If it was deleted, problem solved.
+                                    {
+                                        wasDeletedB = deleteIfNoProblem(ev.Id);
+                                    }
+
+                                    if (!wasDeletedA && !wasDeletedB)
+                                    {
+                                        throw new Exception("We have a problem, both that are overlapping are not fixed and cannot be deleted.");
+                                    }
+                                }
+                            }
                         }
                     }
                 }
-
-                */
             }
-
-
-            
-            
         }
 
         /// <summary>
@@ -277,7 +248,7 @@ namespace ConsoleApp1
 
             }
         }
-        
+
 
     }
 }
