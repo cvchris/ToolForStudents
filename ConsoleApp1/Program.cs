@@ -107,8 +107,13 @@ namespace ConsoleApp1
                 return DayOfWeek.Thursday;
             else if (d == "Fri")
                 return DayOfWeek.Friday;
-
-            return DayOfWeek.Saturday; //error
+            else if (d == "Sat")
+                return DayOfWeek.Saturday;
+            else if (d == "Sun")
+                return DayOfWeek.Sunday;
+            else
+                throw new Exception("Not Valid input");
+            
         }
 
         static Event readData(string input)
