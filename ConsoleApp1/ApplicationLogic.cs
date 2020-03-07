@@ -42,7 +42,7 @@ namespace ConsoleApp1
                 {
                     var sameDayEvents = allEvents.Where(x => x.Day == notFixedEvent.Day).ToList();
 
-                    double tempOffset = 0;
+                    
                     sameDayEvents = sameDayEvents.OrderBy(x => x.startTime).ToList();
                     var thisEvent = sameDayEvents.Single(x => x.Id == notFixedEvent.Id);
 
@@ -51,13 +51,15 @@ namespace ConsoleApp1
                         Event = thisEvent
                     };
 
-                    double xronospetamenos = 0;
+                    double xronospetamenos = 0; //apothikevei se mia mera me vasi to programma posos xronos se xasimo yparxei
 
                     //find the total offset in that day. Begin from the first event of the day and sum the time to go.
                     //be careful: when an event has the same Lesson as the one in notFixedEvent... We should ignore it
                     //Also don't forget about dependencies
                     for (int i = 0; i < sameDayEvents.Count; i++)
                     {
+                        //how do we exlude its own event?
+
                         if (sameDayEvents[i] != thisEvent && sameDayEvents[i].Lesson == thisEvent.Lesson)
                         {
                             //ignore it
@@ -66,14 +68,13 @@ namespace ConsoleApp1
                         {
                             //find the difference between this and the next event
                             int tempvalue = 1;
-                            while (i + tempvalue < sameDayEvents.Count && sameDayEvents[i + tempvalue].Lesson == notFixedEvent.Lesson)
+                            while (i + tempvalue < sameDayEvents.Count && sameDayEvents[i + tempvalue].Lesson == notFixedEvent.Lesson) //it is the same lesson
                             {
                                 tempvalue++;
                             }
 
-                            if (i + tempvalue < sameDayEvents.Count)
+                            if (i + tempvalue < sameDayEvents.Count)//meaning that we found match
                             {
-                                //meaning that we found match
                                 var afterEvent = sameDayEvents[i + tempvalue];
                                 xronospetamenos += (afterEvent.startTime - notFixedEvent.finishTime).TotalMinutes;
 
@@ -96,7 +97,8 @@ namespace ConsoleApp1
                     }
 
 
-                    //int index = sameDayEvents.IndexOf(thisEvent);
+                    
+                    //int index = sameDayEvents.IndexOf(thisEvent); //old commented code
                     //int tempvalue = 1;
                     //while(index - tempvalue >= 0 && sameDayEvents[index-tempvalue].Lesson == notFixedEvent.Lesson)
                     //{
@@ -149,7 +151,7 @@ namespace ConsoleApp1
                     //    //we couldn't find any match after this event, handle it
                     //}
 
-                    time.Time = tempOffset;
+                    time.Time = xronospetamenos;
                     times.Add(time);
                 }
             }
