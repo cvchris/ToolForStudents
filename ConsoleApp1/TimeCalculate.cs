@@ -14,9 +14,11 @@ namespace ConsoleApp1
 
         public double Time { get; set; }
 
-        public Event BeforeEventDependency { get; set; }
+        public List<Event> Dependencies { get; set; }
 
-        public Event AfterEventDependency { get; set; }
+        //public Event BeforeEventDependency { get; set; }
+
+        //public Event AfterEventDependency { get; set; }
 
     }
 }

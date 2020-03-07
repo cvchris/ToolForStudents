@@ -48,7 +48,8 @@ namespace ConsoleApp1
 
                     var time = new TimeCalculate
                     {
-                        Event = thisEvent
+                        Event = thisEvent,
+                        Dependencies = new List<Event>()
                     };
 
                     double xronospetamenos = 0; //apothikevei se mia mera me vasi to programma posos xronos se xasimo yparxei
@@ -58,9 +59,10 @@ namespace ConsoleApp1
                     //Also don't forget about dependencies
                     for (int i = 0; i < sameDayEvents.Count; i++)
                     {
-                        //how do we exlude its own event?
+                        //when it is its own event (samedayEvents[i] == thisEvent), we want to go to the else statement because we want to calculate the missed time.
 
-                        if (sameDayEvents[i] != thisEvent && sameDayEvents[i].Lesson == thisEvent.Lesson)
+                        
+                        if (sameDayEvents[i] != thisEvent && sameDayEvents[i].Lesson == thisEvent.Lesson) //From the same lesson but different event
                         {
                             //ignore it
                         }
@@ -81,12 +83,13 @@ namespace ConsoleApp1
                                 if (!afterEvent.IsFixed) //&& samedayevents[i].isFixed
                                 {
                                     //add dependency
-                                    time.AfterEventDependency = afterEvent;
+                                    time.Dependencies.Add(afterEvent);
+                                    //time.AfterEventDependency = afterEvent;
                                 }
                             }
                             else
                             {
-                                time.AfterEventDependency = null;
+                                //time.AfterEventDependency = null;
                                 //we don't add the tempOffset because it doesn't have anything after that
 
                                 //we couldn't find any match after this event, handle it
