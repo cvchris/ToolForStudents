@@ -26,7 +26,7 @@ namespace ConsoleApp1
 
             //check for all overlapping events. if an non-fixed event has multiple occasions and one occasion is at the same time as one fixed, we should delete it from allEvents.
             //also if the non-fixed event has only one occassion (LessonWithMultipleETimes.Events.Count =1), and this is overlapping with a fixed event, log warning that there is no way that you can go to both
-            checkForOverlapping();
+            //checkForOverlapping(); //has bug, to fix
 
             //we need to make a tree with all the available options
             //we need to allocate 
@@ -67,12 +67,7 @@ namespace ConsoleApp1
                 counter++;
             }
 
-            foreach (var item in times)
-            {
-                Console.WriteLine(item.MemoryId + " " + item.Time);
-            }
-
-            return Tuple.Create(times, memory);
+           return Tuple.Create(times, memory);
         }
 
         private static void checkForOverlapping()

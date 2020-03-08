@@ -9,127 +9,75 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
+            int idCounter = 0; //provides the id
             var mandatoryEvents = new List<Event>();
             var optionalEvents = new List<LessonWithMultipleTimes>();
             //format: Mon 1000-1200
+            double roundtriptime = 0;
 
+            Console.WriteLine("Enter how much time to go to the university and back (in minutes)");
+            var ii = Console.ReadLine();
+            while(!double.TryParse(ii,out roundtriptime))
+            {
+                Console.WriteLine("Error, try again");
+                ii = Console.ReadLine();
+            }
 
+            Console.WriteLine("Enter the fixed lessons in the format: Name,Day 1000-1200,Day 1400-1600");
+            Console.WriteLine("To go to the non fixed, type \"c\"");
 
             var input = Console.ReadLine();
             while (input != "exit" && input != "c")
             {
-                readData(input);
+                List<Event> evTemp = ConsoleHelpers.ParseData(input,true,ref idCounter);
+                mandatoryEvents.AddRange(evTemp);
                 input = Console.ReadLine();
             }
 
-            var mathima_a = new List<Event>();
-            mathima_a.Add(new Event
+            if(input == "c")
             {
-                Id = 1,
-                IsFixed = false,
-                Day = DayOfWeek.Monday,
-                startTime = new DateTime(1, 1, 1, 13, 00, 00),
-                finishTime = new DateTime(1, 1, 1, 14, 00, 00)
-            });
-            mathima_a.Add(new Event
+                Console.WriteLine("Please type the non fixed in the same format. When done type \"done\" ");
+                input = Console.ReadLine();
+                while(input !="done")
+                {
+                    List<Event> evTemp = ConsoleHelpers.ParseData(input, false, ref idCounter);
+                    LessonWithMultipleTimes lesson = new LessonWithMultipleTimes(evTemp);
+                    optionalEvents.Add(lesson);
+                    input = Console.ReadLine();
+                }
+            }
+            var tuple = ApplicationLogic.Logic(mandatoryEvents, optionalEvents, roundtriptime);
+            var times = tuple.Item1;
+            var combinations = tuple.Item2;
+            TimeCalculate min = times.OrderBy(x => x.Time).First();
+            List<int> idsToAdd = combinations[min.MemoryId];
+            List<Event> toDisplay = mandatoryEvents.ToList(); //arxika vale ola ta fixed events
+            List<Event> allOptionalEvents = new List<Event>();
+            foreach (var lesson in optionalEvents)
             {
-                Id = 2,
-                IsFixed = false,
-                Day = DayOfWeek.Monday,
-                startTime = new DateTime(1, 1, 1, 15, 00, 00),
-                finishTime = new DateTime(1, 1, 1, 16, 00, 00)
-            });
-            mathima_a.Add(new Event
+                allOptionalEvents.AddRange(lesson.Times);
+            }
+            foreach(var id in idsToAdd)
             {
-                Id = 3,
-                IsFixed = false,
-                Day = DayOfWeek.Tuesday,
-                startTime = new DateTime(1, 1, 1, 15, 00, 00),
-                finishTime = new DateTime(1, 1, 1, 16, 00, 00)
+                toDisplay.Add(allOptionalEvents.First(x => x.Id == id));
+            }
 
-            });
-
-            var mathima_b_events = new List<Event>();
-            mathima_b_events.Add(new Event
-            {
-                Id = 4,
-                IsFixed = false,
-                Day = DayOfWeek.Wednesday,
-                startTime = new DateTime(1, 1, 1, 15, 00, 00),
-                finishTime = new DateTime(1, 1, 1, 16, 00, 00)
-            });
-            mathima_b_events.Add(new Event
-            {
-                Id = 5,
-                IsFixed = false,
-                Day = DayOfWeek.Wednesday,
-                startTime = new DateTime(1, 1, 1, 19, 00, 00),
-                finishTime = new DateTime(1, 1, 1, 20, 00, 00)
-
-            });
-
-            mandatoryEvents.Add(new Event
-            {
-                Id = 6,
-                IsFixed = true,
-                Day = DayOfWeek.Wednesday,
-                startTime = new DateTime(1, 1, 1, 17, 00, 00),
-                finishTime = new DateTime(1, 1, 1, 18, 00, 00)
-            });
-
-            var m_a = new LessonWithMultipleTimes(mathima_a);
-            var m_b = new LessonWithMultipleTimes(mathima_b_events);
+            toDisplay = toDisplay
+                .OrderBy(x => ((int)x.Day + 6) % 7)
+                .ThenBy(x=> x.startTime)
+                .ToList();
 
 
-            optionalEvents.Add(m_a);
-            optionalEvents.Add(m_b);
-
-            ApplicationLogic.Logic(mandatoryEvents, optionalEvents, 1);
-
-
-        }
-
-        static DayOfWeek GetDay(string d)
-        {
-            if (d == "Mon")
-                return DayOfWeek.Monday;
-            else if (d == "Tue")
-                return DayOfWeek.Tuesday;
-            else if (d == "Wed")
-                return DayOfWeek.Wednesday;
-            else if (d == "Thu")
-                return DayOfWeek.Thursday;
-            else if (d == "Fri")
-                return DayOfWeek.Friday;
-            else if (d == "Sat")
-                return DayOfWeek.Saturday;
-            else if (d == "Sun")
-                return DayOfWeek.Sunday;
-            else
-                throw new Exception("Not Valid input");
+            Console.WriteLine("To teliko programma einai:");
             
+            foreach(var ev in toDisplay)
+            {
+                Console.WriteLine("Day "+ ev.Day + " Mathima: " + ev.Name +" Start: " + ev.startTime.Hour+":"+ev.startTime.Minute +" Finish: "+ ev.finishTime.Hour +":"+ev.finishTime.Minute);
+            }
+
+
+
+
         }
-
-        static Event readData(string input)
-        {
-            var ev = new Event();
-            var d = input.Substring(0, 3);
-            ev.Day = GetDay(d);
-
-            var startTime = input.Substring(4, 4);
-            var startHour = int.Parse(startTime.Substring(0, 2));
-            var startMin = int.Parse(startTime.Substring(2, 2));
-
-            var finishTime = input.Substring(9, 4);
-            var finishHour = int.Parse(finishTime.Substring(0, 2));
-            var finishMin = int.Parse(finishTime.Substring(2, 2));
-
-            int.Parse(startTime);
-            ev.startTime = new DateTime(1, 1, 1, startHour, startMin, 0);
-            ev.finishTime = new DateTime(1, 1, 1, finishHour, finishMin, 0);
-
-            return ev;
-        }
-
     }
 }
