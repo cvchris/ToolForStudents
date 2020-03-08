@@ -16,41 +16,44 @@ namespace UnitTests
             var ypoxreotiko_a = new Event()
             {
                 Day = DayOfWeek.Monday,
-                startTime = new DateTime(1, 1, 1, 12, 00, 00),
-                finishTime = new DateTime(1, 1, 1, 14, 00,00),
                 IsFixed = true,
-                Id = 1
+                Id = 1,
             };
+            ypoxreotiko_a.SetTime(12, 00, 14, 00);
 
             var ypoxreotiko_b = new Event()
             {
                 Id = 2,
                 Day = DayOfWeek.Monday,
-                startTime = new DateTime(1, 1, 1, 18, 00, 00),
-                finishTime = new DateTime(1, 1, 1, 19, 00,00),
                 IsFixed = true
             };
+            ypoxreotiko_b.SetTime(18, 00, 19, 00);
             ypoxreotika.Add(ypoxreotiko_a);
             ypoxreotika.Add(ypoxreotiko_b);
 
             List<Event> ergastirioA = new List<Event>();
 
-            ergastirioA.Add(new Event
+
+            var ergastirioA_A = new Event
             {
                 Id = 3,
                 Day = DayOfWeek.Monday,
                 IsFixed = false,
-                startTime = new DateTime(1,1,1,10,00,00),
-                finishTime = new DateTime(1, 1, 1, 11, 00, 00)
-            });
-            ergastirioA.Add(new Event
+            };
+            ergastirioA_A.SetTime(10, 00, 11, 00);
+
+
+            ergastirioA.Add(ergastirioA_A);
+
+            var ergastirioA_B = new Event
             {
                 Id = 4,
                 Day = DayOfWeek.Monday,
                 IsFixed = false,
-                startTime = new DateTime(1, 1, 1, 15, 00, 00),
-                finishTime = new DateTime(1, 1, 1, 16, 00, 00)
-            });
+            };
+            ergastirioA_B.SetTime(15, 00, 16, 00);
+
+            ergastirioA.Add(ergastirioA_B);
 
 
             

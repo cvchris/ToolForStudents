@@ -9,6 +9,8 @@ namespace WpfApp1
     {
         public int Id { get; set; }
 
+        public string Name { get; set; }
+
         /// <summary>
         /// If not fixed, we need that
         /// </summary>
@@ -19,8 +21,8 @@ namespace WpfApp1
         public bool IsFixed { get; set; }
 
 
-        public DateTime startTime { get; set; }
-        public DateTime finishTime { get; set; }
+        public DateTime startTime { get; private set; }
+        public DateTime finishTime { get; private set; }
 
         /// <summary>
         /// Returns true if two events are conflicting with each other
@@ -47,6 +49,12 @@ namespace WpfApp1
             return this.Id.ToString();
         }
 
+        public void SetTime(int startHour,int startMinute,int finishHour,int finishMinute)
+        {
+            startTime = new DateTime(1, 1, 1, startHour, startMinute, 00);
+            finishTime = new DateTime(1, 1, 1, finishHour, finishMinute, 00);
+            
+        }
     }
 
    

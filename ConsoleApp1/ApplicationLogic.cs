@@ -67,12 +67,7 @@ namespace ConsoleApp1
                 counter++;
             }
 
-            foreach (var item in times)
-            {
-                Console.WriteLine(item.MemoryId + " " + item.Time);
-            }
-
-            return Tuple.Create(times, memory);
+           return Tuple.Create(times, memory);
         }
 
         private static void checkForOverlapping()
