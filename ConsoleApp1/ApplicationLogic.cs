@@ -15,8 +15,10 @@ namespace ConsoleApp1
         {
             List<Event> allEvents = new List<Event>();
             allEvents.AddRange(mandatoryEvents);
+            List<List<Event>> asd= new List<List<Event>>(); 
             foreach (var lesson in lessonsWithMultipleTimes)
             {
+                asd.Add(lesson.Times);
                 allEvents.AddRange(lesson.Times);
             }
             _allEvents = allEvents;
@@ -25,7 +27,33 @@ namespace ConsoleApp1
             //also if the non-fixed event has only one occassion (LessonWithMultipleETimes.Events.Count =1), and this is overlapping with a fixed event, log warning that there is no way that you can go to both
             checkForOverlapping();
 
+            //we need to make a tree with all the available options
+            //we need to allocate 
+            int memoryToAlloc = 1;
+            foreach (var lesson in lessonsWithMultipleTimes)
+            {
+                memoryToAlloc *= lesson.Times.Count; //that many combinations
+            }
 
+            //we need to have a list with memoryToAlloc positions and in each position add a combination of ids, it should store lessonsWithMultipleTimes.Count letters in each one.
+            List<List<int>> memory = new List<List<int>>(); //this stores the ids foreach possible combination
+
+            for (int i = 0; i < memoryToAlloc; i++)
+            {
+                List<int> a = new List<int>();
+                //a.Add()
+            }
+
+            /* 
+             AAA,AAB,AAC,AAD
+             
+             */
+
+            combos(0, asd, string.Empty);
+            
+
+
+            
             var notFixed = allEvents.Where(x => x.IsFixed = false); //all the not fixed events
 
             List<TimeCalculate> times = new List<TimeCalculate>();
@@ -42,7 +70,7 @@ namespace ConsoleApp1
                 {
                     var sameDayEvents = allEvents.Where(x => x.Day == notFixedEvent.Day).ToList();
 
-                    
+
                     sameDayEvents = sameDayEvents.OrderBy(x => x.startTime).ToList();
                     var thisEvent = sameDayEvents.Single(x => x.Id == notFixedEvent.Id);
 
@@ -61,7 +89,7 @@ namespace ConsoleApp1
                     {
                         //when it is its own event (samedayEvents[i] == thisEvent), we want to go to the else statement because we want to calculate the missed time.
 
-                        
+
                         if (sameDayEvents[i] != thisEvent && sameDayEvents[i].Lesson == thisEvent.Lesson) //From the same lesson but different event
                         {
                             //ignore it
@@ -100,7 +128,7 @@ namespace ConsoleApp1
                     }
 
 
-                    
+
                     //int index = sameDayEvents.IndexOf(thisEvent); //old commented code
                     //int tempvalue = 1;
                     //while(index - tempvalue >= 0 && sameDayEvents[index-tempvalue].Lesson == notFixedEvent.Lesson)
@@ -159,12 +187,6 @@ namespace ConsoleApp1
                 }
             }
 
-            /* from times we have:
-                OptA -> 300min (No dependency)
-
-            
-
-            */
             //we need to make sure that for each LessonWithMultipleTimes there is only one event in the final calendar
         }
 
@@ -254,6 +276,19 @@ namespace ConsoleApp1
             }
         }
 
+        static void combos(int pos, List<List<Event>>c, String soFar)
+        {
+            if (pos == c.Count)
+            {
+                Console.WriteLine(soFar);
+                //System.out.writeln(soFar);
+                return;
+            }
+            for (int i = 0; i != c[pos].Count; i++)
+            {
+                combos(pos + 1, c, soFar + c[pos][i]);
+            }
+        }
 
     }
 }

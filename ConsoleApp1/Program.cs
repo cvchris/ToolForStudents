@@ -25,72 +25,66 @@ namespace ConsoleApp1
             var mathima_a = new List<Event>();
             mathima_a.Add(new Event
             {
+                Id = 1,
+                IsFixed = false,
                 Day = DayOfWeek.Monday,
                 startTime = new DateTime(1, 1, 1, 13, 00, 00),
                 finishTime = new DateTime(1, 1, 1, 14, 00, 00)
             });
             mathima_a.Add(new Event
             {
+                Id = 2,
+                IsFixed = false,
                 Day = DayOfWeek.Monday,
                 startTime = new DateTime(1, 1, 1, 15, 00, 00),
                 finishTime = new DateTime(1, 1, 1, 16, 00, 00)
             });
-            var m_a = new LessonWithMultipleTimes(mathima_a);
-            optionalEvents.Add(m_a);
-
-            double offset = double.MaxValue;
-            Event bestEvent;
-
-            //we also need to search between the multiple LessonWithMultipleTimes
-
-            foreach (var time in m_a.Times)
+            mathima_a.Add(new Event
             {
-                //find all the events that are in the same date as mandatory events
-                var result = mandatoryEvents.Where(x => x.Day == time.Day).ToList();
-                if (result.Count != 0)
-                {
-                    foreach (var a in result)
-                    {
-                        //double currOffset = Math.Abs((time.startTime - a.startTime).TotalMinutes);
-                        //if(currOffset < offset)
-                        //{
-                        //    offset = currOffset;
-                        //}
+                Id = 3,
+                IsFixed = false,
+                Day = DayOfWeek.Tuesday,
+                startTime = new DateTime(1, 1, 1, 15, 00, 00),
+                finishTime = new DateTime(1, 1, 1, 16, 00, 00)
 
-                        if (a.startTime < time.startTime)//to ypoxreotiko einai prin apo to ergastirio
-                        {
-                            var currOffset = (time.startTime - a.finishTime).TotalMinutes;
-                            if (currOffset < offset)
-                            {
-                                offset = currOffset;
-                                bestEvent = time;
-                                //we also need to track which "time" this was
-                            }
-                        }
-                        else
-                        {
-                            var currOffset = (a.startTime - time.finishTime).TotalMinutes;
-                            if(currOffset < offset)
-                            {
-                                offset = currOffset;
-                                bestEvent = time;
-                            }
-                        }
+            });
 
-                    }
-                }
-                //handle if there are no events
-                else
-                {
-                    double currOffset = 13; //we should find nearest event and calculate that time
-                    if (currOffset < offset)
-                    {
-                        offset = currOffset;
-                        bestEvent = time;
-                    }
+            var mathima_b_events = new List<Event>();
+            mathima_b_events.Add(new Event
+            {
+                Id = 4,
+                IsFixed = false,
+                Day = DayOfWeek.Wednesday,
+                startTime = new DateTime(1, 1, 1, 15, 00, 00),
+                finishTime = new DateTime(1, 1, 1, 16, 00, 00)
+            });
+            mathima_b_events.Add(new Event
+            {
+                Id = 5,
+                IsFixed = false,
+                Day = DayOfWeek.Wednesday,
+                startTime = new DateTime(1, 1, 1, 19, 00, 00),
+                finishTime = new DateTime(1, 1, 1, 20, 00, 00)
 
-                }
-            }
+            });
+
+            mandatoryEvents.Add(new Event
+            {
+                Id = 6,
+                IsFixed = true,
+                Day = DayOfWeek.Wednesday,
+                startTime = new DateTime(1, 1, 1, 17, 00, 00),
+                finishTime = new DateTime(1, 1, 1, 18, 00, 00)
+            });
+
+            var m_a = new LessonWithMultipleTimes(mathima_a);
+            var m_b = new LessonWithMultipleTimes(mathima_b_events);
+
+
+            optionalEvents.Add(m_a);
+            optionalEvents.Add(m_b);
+
+            ApplicationLogic.Logic(mandatoryEvents, optionalEvents, 1);
 
 
         }

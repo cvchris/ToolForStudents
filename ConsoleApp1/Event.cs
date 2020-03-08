@@ -33,10 +33,18 @@ namespace WpfApp1
                 return false;
 
             //two ways of conflicting: if (a.finishtime > b.starttime) or (a.starttime < b.finishtime)
-            if (this.startTime < ev.finishTime || this.finishTime > ev.startTime)
+            if (this.startTime < ev.finishTime && this.finishTime > ev.startTime)
+            {
                 return true;
 
+            }
+
             return false;
+        }
+
+        public override string ToString()
+        {
+            return this.Id.ToString();
         }
 
     }
