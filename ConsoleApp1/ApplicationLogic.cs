@@ -38,25 +38,40 @@ namespace ConsoleApp1
             //we need to have a list with memoryToAlloc positions and in each position add a combination of ids, it should store lessonsWithMultipleTimes.Count letters in each one.
             List<List<int>> memory = new List<List<int>>(); //this stores the ids foreach possible combination
 
-            for (int i = 0; i < memoryToAlloc; i++)
-            {
-                List<int> a = new List<int>();
-                //a.Add()
-            }
-
-            /* 
-             AAA,AAB,AAC,AAD
-             
-             */
-
             combos(0, asd, string.Empty);
             
+            for (int i = 0; i < combinations.Count; i++)
+            {
+                var tempList = new List<int>();
+                var splitted = combinations[i].Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                foreach(var str in splitted)
+                {
+                    tempList.Add(int.Parse(str));
+                }
+                memory.Add(tempList);
+            }
+
+            List<TimeCalculate> times = new List<TimeCalculate>();
+            int counter = 0;
+            foreach (var comb in memory)
+            {
+                List<Event> temp = mandatoryEvents.ToList(); //without destroying the original list
+                foreach (var EventId in comb)
+                {
+                    Event ev = _allEvents.First(x => x.Id == EventId);
+                    temp.Add(ev);
+                }
+                var result = CalculateTotalSpareTime(temp,roundTripWeight);
+                new TimeCalculate { MemoryId = counter, Time = result };
+                counter++;
+            }
+
 
 
             
             var notFixed = allEvents.Where(x => x.IsFixed = false); //all the not fixed events
 
-            List<TimeCalculate> times = new List<TimeCalculate>();
+            //List<TimeCalculate> times = new List<TimeCalculate>();
 
             foreach (var notFixedEvent in notFixed)
             {
@@ -275,20 +290,28 @@ namespace ConsoleApp1
 
             }
         }
-
+        static List<string> combinations = new List<string>();
         static void combos(int pos, List<List<Event>>c, String soFar)
         {
             if (pos == c.Count)
             {
-                Console.WriteLine(soFar);
+                combinations.Add(soFar);
                 //System.out.writeln(soFar);
                 return;
             }
             for (int i = 0; i != c[pos].Count; i++)
             {
-                combos(pos + 1, c, soFar + c[pos][i]);
+                combos(pos + 1, c, soFar + c[pos][i] + ",");
             }
         }
+
+        static double CalculateTotalSpareTime(List<Event> state,double roundTripWeight)
+        {
+            double tempWeight = roundTripWeight; //initialise it with the time he has to go to the uni and back
+            throw new NotImplementedException();
+            return 0;
+        }
+
 
     }
 }
