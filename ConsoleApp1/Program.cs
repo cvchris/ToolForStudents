@@ -72,7 +72,7 @@ namespace ConsoleApp1
             
             foreach(var ev in toDisplay)
             {
-                Console.WriteLine("day "+ ev.Day + ev.Name +" start: " + ev.startTime.Hour+":"+ev.startTime.Minute +" finish: "+ ev.finishTime.Hour +":"+ev.finishTime.Minute);
+                Console.WriteLine("Day "+ ev.Day + " Mathima: " + ev.Name +" Start: " + ev.startTime.Hour+":"+ev.startTime.Minute +" Finish: "+ ev.finishTime.Hour +":"+ev.finishTime.Minute);
             }
 
 
