@@ -14,6 +14,11 @@ namespace ConsoleApp1
 
         public LessonWithMultipleTimes(List<Event> times)
         {
+            foreach (var ev in times)
+            {
+                ev.Lesson = this;
+            }
+
             Times = times;
         }
 

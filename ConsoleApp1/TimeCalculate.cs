@@ -10,15 +10,12 @@ namespace ConsoleApp1
     /// </summary>
     public class TimeCalculate
     {
-        public Event Event { get; set; }
+        /// <summary>
+        /// The location on the table Memory
+        /// </summary>
+        public int MemoryId { get; set; }
 
         public double Time { get; set; }
-
-        public List<Event> Dependencies { get; set; }
-
-        //public Event BeforeEventDependency { get; set; }
-
-        //public Event AfterEventDependency { get; set; }
 
     }
 }

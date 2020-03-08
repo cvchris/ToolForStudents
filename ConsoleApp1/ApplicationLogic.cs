@@ -9,14 +9,17 @@ namespace ConsoleApp1
     public static class ApplicationLogic
     {
         private static List<Event> _allEvents;
+        private static List<string> combinations = new List<string>();
 
         //roundTripWeight = the time to go to the university and back. (We assume that this will be done once a day).
-        public static void Logic(List<Event> mandatoryEvents, List<LessonWithMultipleTimes> lessonsWithMultipleTimes, double roundTripWeight)
+        public static Tuple<List<TimeCalculate>,List<List<int>>> Logic(List<Event> mandatoryEvents, List<LessonWithMultipleTimes> lessonsWithMultipleTimes, double roundTripWeight)
         {
             List<Event> allEvents = new List<Event>();
             allEvents.AddRange(mandatoryEvents);
+            List<List<Event>> asd= new List<List<Event>>(); 
             foreach (var lesson in lessonsWithMultipleTimes)
             {
+                asd.Add(lesson.Times);
                 allEvents.AddRange(lesson.Times);
             }
             _allEvents = allEvents;
@@ -25,147 +28,51 @@ namespace ConsoleApp1
             //also if the non-fixed event has only one occassion (LessonWithMultipleETimes.Events.Count =1), and this is overlapping with a fixed event, log warning that there is no way that you can go to both
             checkForOverlapping();
 
-
-            var notFixed = allEvents.Where(x => x.IsFixed = false); //all the not fixed events
-
-            List<TimeCalculate> times = new List<TimeCalculate>();
-
-            foreach (var notFixedEvent in notFixed)
+            //we need to make a tree with all the available options
+            //we need to allocate 
+            int memoryToAlloc = 1;
+            foreach (var lesson in lessonsWithMultipleTimes)
             {
-                //search in allnonfixed if this is the only one with that lessonId. (if it is then automatically add it to final list- make it fixed)
-                if (notFixed.Where(x => x.Lesson == notFixedEvent.Lesson).ToList().Count == 1)
-                {
-                    //it may not be updated in the allEvents
-                    notFixedEvent.IsFixed = true; //we may need to mark it in another way
-                }
-                else
-                {
-                    var sameDayEvents = allEvents.Where(x => x.Day == notFixedEvent.Day).ToList();
-
-                    
-                    sameDayEvents = sameDayEvents.OrderBy(x => x.startTime).ToList();
-                    var thisEvent = sameDayEvents.Single(x => x.Id == notFixedEvent.Id);
-
-                    var time = new TimeCalculate
-                    {
-                        Event = thisEvent,
-                        Dependencies = new List<Event>()
-                    };
-
-                    double xronospetamenos = 0; //apothikevei se mia mera me vasi to programma posos xronos se xasimo yparxei
-
-                    //find the total offset in that day. Begin from the first event of the day and sum the time to go.
-                    //be careful: when an event has the same Lesson as the one in notFixedEvent... We should ignore it
-                    //Also don't forget about dependencies
-                    for (int i = 0; i < sameDayEvents.Count; i++)
-                    {
-                        //when it is its own event (samedayEvents[i] == thisEvent), we want to go to the else statement because we want to calculate the missed time.
-
-                        
-                        if (sameDayEvents[i] != thisEvent && sameDayEvents[i].Lesson == thisEvent.Lesson) //From the same lesson but different event
-                        {
-                            //ignore it
-                        }
-                        else
-                        {
-                            //find the difference between this and the next event
-                            int tempvalue = 1;
-                            while (i + tempvalue < sameDayEvents.Count && sameDayEvents[i + tempvalue].Lesson == notFixedEvent.Lesson) //it is the same lesson
-                            {
-                                tempvalue++;
-                            }
-
-                            if (i + tempvalue < sameDayEvents.Count)//meaning that we found match
-                            {
-                                var afterEvent = sameDayEvents[i + tempvalue];
-                                xronospetamenos += (afterEvent.startTime - notFixedEvent.finishTime).TotalMinutes;
-
-                                if (!afterEvent.IsFixed) //&& samedayevents[i].isFixed
-                                {
-                                    //add dependency
-                                    time.Dependencies.Add(afterEvent);
-                                    //time.AfterEventDependency = afterEvent;
-                                }
-                            }
-                            else
-                            {
-                                //time.AfterEventDependency = null;
-                                //we don't add the tempOffset because it doesn't have anything after that
-
-                                //we couldn't find any match after this event, handle it
-                            }
-
-
-                        }
-                    }
-
-
-                    
-                    //int index = sameDayEvents.IndexOf(thisEvent); //old commented code
-                    //int tempvalue = 1;
-                    //while(index - tempvalue >= 0 && sameDayEvents[index-tempvalue].Lesson == notFixedEvent.Lesson)
-                    //{
-                    //    tempvalue++;
-                    //}
-
-                    //if(index-tempvalue>=0 )//meaning that we didn't reach the top of the list
-                    //{
-                    //    var beforeEvent = sameDayEvents[index - tempvalue];
-                    //    tempOffset += (notFixedEvent.startTime - beforeEvent.finishTime).TotalMinutes;
-
-                    //    if(!beforeEvent.isFixed)
-                    //    {
-                    //        //add dependency
-                    //        time.BeforeEventDependency = beforeEvent;
-                    //    }
-
-                    //}
-                    //else //index-tempvalue==0
-                    //{
-                    //    time.BeforeEventDependency = null;
-                    //    //we don't add the tempOffset because it doesn't have anything before that
-                    //    //it was the first of the list, or all the above were from the same lesson, handle it
-                    //}
-
-
-                    //tempvalue = 1;
-                    //while(index + tempvalue < sameDayEvents.Count && sameDayEvents[index+tempvalue].Lesson == notFixedEvent.Lesson)
-                    //{
-                    //    tempvalue++;
-                    //}
-
-                    //if(index + tempvalue < sameDayEvents.Count)
-                    //{
-                    //    //meaning that we found match
-                    //    var afterEvent = sameDayEvents[index + tempvalue];
-                    //    tempOffset += (afterEvent.startTime - notFixedEvent.finishTime).TotalMinutes;
-
-                    //    if (!afterEvent.isFixed)
-                    //    {
-                    //        //add dependency
-                    //        time.AfterEventDependency= afterEvent;
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    time.AfterEventDependency = null;
-                    //    //we don't add the tempOffset because it doesn't have anything after that
-
-                    //    //we couldn't find any match after this event, handle it
-                    //}
-
-                    time.Time = xronospetamenos;
-                    times.Add(time);
-                }
+                memoryToAlloc *= lesson.Times.Count; //that many combinations
             }
 
-            /* from times we have:
-                OptA -> 300min (No dependency)
+            //we need to have a list with memoryToAlloc positions and in each position add a combination of ids, it should store lessonsWithMultipleTimes.Count letters in each one.
+            List<List<int>> memory = new List<List<int>>(); //this stores the ids foreach possible combination
 
+            combos(0, asd, string.Empty); //gets all combinations
             
+            for (int i = 0; i < combinations.Count; i++)
+            {
+                var tempList = new List<int>();
+                var splitted = combinations[i].Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                foreach(var str in splitted)
+                {
+                    tempList.Add(int.Parse(str));
+                }
+                memory.Add(tempList);
+            }
 
-            */
-            //we need to make sure that for each LessonWithMultipleTimes there is only one event in the final calendar
+            List<TimeCalculate> times = new List<TimeCalculate>();
+            int counter = 0;
+            foreach (var comb in memory)
+            {
+                List<Event> temp = mandatoryEvents.ToList(); //without destroying the original list
+                foreach (var EventId in comb)
+                {
+                    Event ev = _allEvents.First(x => x.Id == EventId);
+                    temp.Add(ev);
+                }
+                var result = CalculateTotalSpareTime(temp,roundTripWeight);
+                times.Add(new TimeCalculate { MemoryId = counter, Time = result });
+                counter++;
+            }
+
+            foreach (var item in times)
+            {
+                Console.WriteLine(item.MemoryId + " " + item.Time);
+            }
+
+            return Tuple.Create(times, memory);
         }
 
         private static void checkForOverlapping()
@@ -252,6 +159,44 @@ namespace ConsoleApp1
                 return false;
 
             }
+        }
+        static void combos(int pos, List<List<Event>>c, String soFar)
+        {
+            if (pos == c.Count)
+            {
+                combinations.Add(soFar);
+                //System.out.writeln(soFar);
+                return;
+            }
+            for (int i = 0; i != c[pos].Count; i++)
+            {
+                combos(pos + 1, c, soFar + c[pos][i] + ",");
+            }
+        }
+
+        static double CalculateTotalSpareTime(List<Event> state,double roundTripWeight)
+        {
+            //double tempWeight = roundTripWeight; //initialise it with the time he has to go to the uni and back
+            IEnumerable<DayOfWeek> values = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>(); //gets all days in Enumerable
+            double xronospetamenos = 0;
+            foreach (DayOfWeek day in values)
+            {
+                var currentDayEvents = state.Where(x => x.Day == day).ToList();
+                currentDayEvents = currentDayEvents.OrderBy(x => x.startTime).ToList();
+
+                if(currentDayEvents.Count >= 1)
+                {
+                    xronospetamenos += roundTripWeight;
+                }
+
+                for (int i = 0; i < currentDayEvents.Count - 1; i++)
+                {
+                    var afterEvent = currentDayEvents[i+1];
+                    xronospetamenos += (afterEvent.startTime - currentDayEvents[i].finishTime).TotalMinutes;
+                }
+            }
+                
+            return xronospetamenos;
         }
 
 
