@@ -24,5 +24,12 @@ namespace Logic
 
         public string Name { get; set; }
 
+        public string NumberOfEvents
+        {
+            get
+            {
+                return Times.Count + " φορές";
+            }
+        }
     }
 }

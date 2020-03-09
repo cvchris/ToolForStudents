@@ -13,7 +13,7 @@
         <ListView x:Name="fixedEventsList">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding Name}"/>
+                    <TextCell Text="{Binding Name}" Detail="{Binding NumberOfEvents}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -21,7 +21,7 @@
         <ListView x:Name="nonFixedEventsList">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding Name}"/>
+                    <TextCell Text="{Binding Name}" Detail="{Binding NumberOfEvents}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

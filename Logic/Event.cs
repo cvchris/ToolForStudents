@@ -64,6 +64,17 @@ namespace Logic
                 //return startTime.Hour.ToString() + ":" + startTime.Minute.ToString() + " - " + finishTime.Hour.ToString() + ":" + finishTime.Minute.ToString();
             }
         }
+
+        /// <summary>
+        /// Used for showing for example: Monday 10:00 AM - 12:00 PM
+        /// </summary>
+        public string DetailView
+        {
+            get
+            {
+                return this.Day + " " + DateTimeFormat;
+            }
+        }
     }
 
    

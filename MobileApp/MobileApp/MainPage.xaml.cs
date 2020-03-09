@@ -57,7 +57,7 @@ namespace MobileApp
                 tempList.AddRange(lesson.Times);
             }
             Tuple<List<TimeCalculate>, List<List<int>>> result = ApplicationLogic.Logic(tempList, NotFixedEvents, 30);//change the time to go to uni to parameter
-            Navigation.PushAsync(new ResultsPage(tempList,result));
+            Navigation.PushAsync(new ResultsPage(tempList,result,NotFixedEvents));
         }
     }
 }
