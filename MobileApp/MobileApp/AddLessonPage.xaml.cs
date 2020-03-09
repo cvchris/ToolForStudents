@@ -24,7 +24,12 @@ namespace MobileApp
             InitializeComponent();
             eventsList.ItemsSource = events;
             addedEntitiesCount = 0;
-            var values = Enum.GetValues(typeof(DayOfWeek));
+            var values = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>().ToList();
+            values.Add(values[0]);
+            values.RemoveAt(0);
+            //var temp = values[0];
+            //values[0] = values[6];
+            //values[6] = temp;
             dayPicker.ItemsSource = values;
         }
 
@@ -42,6 +47,12 @@ namespace MobileApp
                 DisplayAlert("Προσοχή", "Η ημερομηνία λήξης του μαθήματος πρέπει να είναι μεγαλύτερη από της έναρξης", "OK");
                 return;
             }
+            if(startTime.Time == finishTime.Time)
+            {
+                DisplayAlert("Προσοχή", "Η ημερομηνία λήξης του μαθήματος πρέπει να είναι διαφορετική από της έναρξης", "OK");
+                return;
+            }
+
 
 
             //do a check that the values are correct.
@@ -62,6 +73,7 @@ namespace MobileApp
             events.Add(ev);
             eventsList.ItemsSource = null;
             eventsList.ItemsSource = events;
+            dayPicker.SelectedItem = null;
             addedEntitiesCount++;
         }
 

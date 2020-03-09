@@ -32,7 +32,7 @@
             <Label Text="Ώρα έναρξης"/>
             <TimePicker x:Name="startTime"/>
             <Label Text="Ώρα λήξης"/>
-            <TimePicker x:Name="finishTime"/>
+            <TimePicker x:Name="finishTime" Format="hh:mm"/>
             <Button Text="Προσθήκη" Clicked="Button_Clicked"></Button>
             <ListView x:Name="eventsList">
                 <ListView.ItemTemplate>
