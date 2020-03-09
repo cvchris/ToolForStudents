@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WpfApp1;
+using Logic;
 using Xunit;
 
 namespace UnitTests
@@ -58,7 +58,7 @@ namespace UnitTests
 
             
             List<LessonWithMultipleTimes> lessonWithMultiples = new List<LessonWithMultipleTimes>();
-            lessonWithMultiples.Add(new LessonWithMultipleTimes(ergastirioA));
+            lessonWithMultiples.Add(new LessonWithMultipleTimes(ergastirioA,false));
 
             var tuple = ApplicationLogic.Logic(ypoxreotika, lessonWithMultiples, 20);
 

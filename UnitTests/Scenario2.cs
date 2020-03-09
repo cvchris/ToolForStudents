@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WpfApp1;
+using Logic;
 using Xunit;
 
 namespace UnitTests
@@ -72,8 +72,8 @@ namespace UnitTests
 
             mandatoryEvents.Add(mandatoryA);
 
-            var m_a = new LessonWithMultipleTimes(mathima_a);
-            var m_b = new LessonWithMultipleTimes(mathima_b_events);
+            var m_a = new LessonWithMultipleTimes(mathima_a,false);
+            var m_b = new LessonWithMultipleTimes(mathima_b_events,false);
 
 
             optionalEvents.Add(m_a);

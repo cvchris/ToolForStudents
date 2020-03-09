@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WpfApp1;
+using Logic;
 
 namespace ConsoleApp1
 {
@@ -41,7 +41,7 @@ namespace ConsoleApp1
                 while(input !="done")
                 {
                     List<Event> evTemp = ConsoleHelpers.ParseData(input, false, ref idCounter);
-                    LessonWithMultipleTimes lesson = new LessonWithMultipleTimes(evTemp);
+                    LessonWithMultipleTimes lesson = new LessonWithMultipleTimes(evTemp,false);
                     optionalEvents.Add(lesson);
                     input = Console.ReadLine();
                 }

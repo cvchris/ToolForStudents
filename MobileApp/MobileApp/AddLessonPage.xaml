@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+             xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="MobileApp.AddLessonPage">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="1.2"
+            ScaleOut="0.8"
+            DurationIn="400"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="White" VerticalOptions="Center" 
+        HorizontalOptions="Center" 
+        Padding="20, 20, 20, 20">
+            <StackLayout Orientation="Horizontal">
+                <Switch IsToggled="False" x:Name="isFixedSwitch"/>
+                <Label Text="Μάθημα με καθορισμένη ώρα"/>
+            </StackLayout>
+            <Entry Placeholder="Όνομα Μαθήματος" x:Name="lessonName"/>
+            <Label Text="Ημέρα"/>
+            <Picker x:Name="dayPicker" />
+            <Label Text="Ώρα έναρξης"/>
+            <TimePicker x:Name="startTime"/>
+            <Label Text="Ώρα λήξης"/>
+            <TimePicker x:Name="finishTime"/>
+            <Button Text="Προσθήκη" Clicked="Button_Clicked"></Button>
+            <ListView x:Name="eventsList">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding Day}" Detail="{Binding DateTimeFormat}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button Text="Done" Clicked="Button_Clicked_1"/>
+        </StackLayout>
+    </ContentPage.Content>
+</pages:PopupPage>

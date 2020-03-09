@@ -1,9 +1,8 @@
-﻿using ConsoleApp1;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WpfApp1
+namespace Logic
 {
     public class Event
     {
@@ -54,6 +53,16 @@ namespace WpfApp1
             startTime = new DateTime(1, 1, 1, startHour, startMinute, 00);
             finishTime = new DateTime(1, 1, 1, finishHour, finishMinute, 00);
             
+        }
+
+        public string DateTimeFormat
+        {
+            get
+            {
+                return startTime.ToShortTimeString() + " - " + finishTime.ToShortTimeString();
+                //return startTime.ToString("h mm") + " - " + finishTime.ToString("h mm");
+                //return startTime.Hour.ToString() + ":" + startTime.Minute.ToString() + " - " + finishTime.Hour.ToString() + ":" + finishTime.Minute.ToString();
+            }
         }
     }
 

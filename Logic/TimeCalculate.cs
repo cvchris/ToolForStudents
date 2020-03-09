@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using WpfApp1;
 
-namespace ConsoleApp1
+namespace Logic
 {
     /// <summary>
     /// Class that we will need to calculate which Events to remove
