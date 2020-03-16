@@ -81,7 +81,7 @@ namespace MobileApp
         {
             if (events.Count == 0)
             {
-                DisplayAlert("Προσοχή", "Πρέπει να βάλεις μια ημερομηνία", "ΟΚ");
+                DisplayAlert("Προσοχή", "Πρέπει να προσθέσεις μια ημερομηνία", "ΟΚ");
                 return;
             }
             var lesson = new LessonWithMultipleTimes(events, isFixedSwitch.IsToggled)
@@ -100,6 +100,18 @@ namespace MobileApp
             SelectedStringChanged(sender, e);
             PopupNavigation.Instance.PopAsync(true);
 
+        }
+
+        private async void eventsList_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            var ev = e.Item as Event;
+            bool todelete = await DisplayAlert("Delete this?", "You sure you want to delete this?", "Yes", "No go back");
+            if(todelete)
+            {
+                events.Remove(ev);
+                eventsList.ItemsSource = null;
+                eventsList.ItemsSource = events;
+            }
         }
     }
 }

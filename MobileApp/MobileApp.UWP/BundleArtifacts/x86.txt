@@ -1,0 +1,2 @@
+MainPackage=C:\Projects\My Projects\ToolForStudents\ToolForStudents\MobileApp\MobileApp.UWP\bin\x86\Release\MobileApp.UWP_1.0.0.0_x86.appx
+SymbolPackage=C:\Projects\My Projects\ToolForStudents\ToolForStudents\MobileApp\MobileApp.UWP\obj\x86\Release\Symbols\MobileApp.UWP_1.0.0.0_x86.appxsym

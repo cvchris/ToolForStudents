@@ -46,7 +46,7 @@ namespace ConsoleApp1
                     input = Console.ReadLine();
                 }
             }
-            var tuple = ApplicationLogic.Logic(mandatoryEvents, optionalEvents, roundtriptime);
+            var tuple = new ApplicationLogic().Logic(mandatoryEvents, optionalEvents, roundtriptime);
             var times = tuple.Item1;
             var combinations = tuple.Item2;
             TimeCalculate min = times.OrderBy(x => x.Time).First();

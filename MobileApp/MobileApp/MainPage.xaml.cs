@@ -17,7 +17,7 @@ namespace MobileApp
     {
         public static List<LessonWithMultipleTimes> fixedEvents = new List<LessonWithMultipleTimes>();
         public static List<LessonWithMultipleTimes> NotFixedEvents = new List<LessonWithMultipleTimes>();
-
+        private double? RoundTripWeight;
         public MainPage()
         {
             InitializeComponent();
@@ -49,15 +49,27 @@ namespace MobileApp
             nonFixedEventsList.ItemsSource = NotFixedEvents;
         }
 
-        private void Calculate_Clicked(object sender, EventArgs e)
+        private async void Calculate_Clicked(object sender, EventArgs e)
         {
+            if(RoundTripWeight == null)
+            {
+                var res = await DisplayPromptAsync("Round Trip time", "How much time to go to university and back (in minutes)?",keyboard:Keyboard.Numeric);
+                try
+                {
+                    RoundTripWeight = double.Parse(res);
+                }
+                catch(Exception ec)
+                {
+                    RoundTripWeight = 30;
+                }
+            }
             List<Event> tempList = new List<Event>();
             foreach(var lesson in fixedEvents)
             {
                 tempList.AddRange(lesson.Times);
             }
-            Tuple<List<TimeCalculate>, List<List<int>>> result = ApplicationLogic.Logic(tempList, NotFixedEvents, 30);//change the time to go to uni to parameter
-            Navigation.PushAsync(new ResultsPage(tempList,result,NotFixedEvents));
+            Tuple<List<TimeCalculate>, List<List<int>>> result = new ApplicationLogic().Logic(tempList, NotFixedEvents, RoundTripWeight.Value);//change the time to go to uni to parameter
+            await Navigation.PushAsync(new ResultsPage(tempList,result,NotFixedEvents));
         }
     }
 }

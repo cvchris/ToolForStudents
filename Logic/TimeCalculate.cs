@@ -5,7 +5,7 @@ using System.Text;
 namespace Logic
 {
     /// <summary>
-    /// Class that we will need to calculate which Events to remove
+    /// It stores each state with the id of this state
     /// </summary>
     public class TimeCalculate
     {
@@ -15,6 +15,12 @@ namespace Logic
         public int MemoryId { get; set; }
 
         public double Time { get; set; }
+
+        /// <summary>
+        /// We should store if this state has overlapping.
+        /// We could check to dismiss states that have overlapping & if all states have overlapping, throw warning.
+        /// </summary>
+        public bool HasOverlapping { get; set; }
 
     }
 }

@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Logic
 {
-    public static class ApplicationLogic
+    public class ApplicationLogic
     {
-        private static List<Event> _allEvents;
-        private static List<string> combinations = new List<string>();
+        private List<Event> _allEvents;
+        private List<string> combinations = new List<string>();
 
         //roundTripWeight = the time to go to the university and back. (We assume that this will be done once a day).
-        public static Tuple<List<TimeCalculate>,List<List<int>>> Logic(List<Event> mandatoryEvents, List<LessonWithMultipleTimes> lessonsWithMultipleTimes, double roundTripWeight)
+        public Tuple<List<TimeCalculate>,List<List<int>>> Logic(List<Event> mandatoryEvents, List<LessonWithMultipleTimes> lessonsWithMultipleTimes, double roundTripWeight)
         {
             List<Event> allEvents = new List<Event>();
             allEvents.AddRange(mandatoryEvents);
@@ -61,100 +61,20 @@ namespace Logic
                     Event ev = _allEvents.First(x => x.Id == EventId);
                     temp.Add(ev);
                 }
+
+                var hasOverlapping = checkForOverLapping(temp);
+
                 var result = CalculateTotalSpareTime(temp,roundTripWeight);
-                times.Add(new TimeCalculate { MemoryId = counter, Time = result });
+                times.Add(new TimeCalculate { MemoryId = counter, Time = result, HasOverlapping = hasOverlapping });
                 counter++;
             }
 
            return Tuple.Create(times, memory);
         }
 
-        private static void checkForOverlapping()
-        {
-            //get by day.
-            IEnumerable<DayOfWeek> values = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>(); //gets all days in Enumerable
-            foreach (DayOfWeek day in values)
-            {
-                var allEventsInSpecificDay = _allEvents.Where(x => x.Day == day).ToList();
-                allEventsInSpecificDay = allEventsInSpecificDay.OrderBy(x => x.startTime).ToList();
 
-                //not working, we could be having more that one overlapping
-
-                //σωστος τροπος: για καθε event στην ημερα, τσεκαρε με ΟΛΑ τα υπολοιπα events εαν γίνεται καποιο overlapping... ισως ενας τροπος optimization είναι να μην κοιταει με τα προηγουμενα του (να το σιγουρεψω).
-
-                //check for overlapping
-                for (int i = 0; i < allEventsInSpecificDay.Count; i++)
-                {
-                    foreach (var ev in allEventsInSpecificDay)
-                    {
-                        if (ev != allEventsInSpecificDay[i]) //we don't want to check with itself
-                        {
-                            if (ev.Conflicts(allEventsInSpecificDay[i]))
-                            {
-                                //ev and allEventsInSpecificDay[i] conflict.
-
-
-                                //check if either of them is non-fixed
-                                if (allEventsInSpecificDay[i].IsFixed && ev.IsFixed)
-                                {
-                                    throw new Exception("We have a problem because both are fixed.");
-                                }
-                                else
-                                {
-                                    if (!allEventsInSpecificDay[i].IsFixed && !ev.IsFixed)
-                                    {
-                                        //TODO: both not fixed, find which is optimal to delete from the two
-                                    }
-
-                                    bool wasDeletedA = false;
-                                    if (!allEventsInSpecificDay[i].IsFixed)
-                                    {
-                                        wasDeletedA = deleteIfNoProblem(allEventsInSpecificDay[i].Id);
-                                    }
-
-                                    bool wasDeletedB = false;
-                                    if (!ev.IsFixed && !wasDeletedA) //meaning that the other one wasn't deleted. If it was deleted, problem solved.
-                                    {
-                                        wasDeletedB = deleteIfNoProblem(ev.Id);
-                                    }
-
-                                    if (!wasDeletedA && !wasDeletedB)
-                                    {
-                                        throw new Exception("We have a problem, both that are overlapping are not fixed and cannot be deleted.");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// if it is not the only one appearence, we can delete it
-        /// </summary>
-        /// <returns>True if it was deleted</returns>
-        private static bool deleteIfNoProblem(int EventId)
-        {
-            var thisEvent = _allEvents.First(x => x.Id == EventId);
-
-            //check if this event has another appearence
-            var otherEventsFromSameLesson = _allEvents.Where(x => x.Lesson == thisEvent.Lesson).ToList();
-            if (otherEventsFromSameLesson.Count > 1)
-            {
-                //check if the other ones are overlapping?
-                //for now we will just delete this event because it is not required
-                _allEvents.Remove(_allEvents.Single(x => x.Id == EventId));
-                return true;
-            }
-            else
-            {
-                //this event cannot be deleted because there are not other options
-                return false;
-
-            }
-        }
-        static void combos(int pos, List<List<Event>>c, String soFar)
+        
+        void combos(int pos, List<List<Event>>c, String soFar)
         {
             if (pos == c.Count)
             {
@@ -168,7 +88,32 @@ namespace Logic
             }
         }
 
-        static double CalculateTotalSpareTime(List<Event> state,double roundTripWeight)
+        private bool checkForOverLapping(List<Event> state)
+        {
+            bool hasOverlap = false;
+            IEnumerable<DayOfWeek> days = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>(); //gets all days in Enumerable
+            foreach(DayOfWeek day in days)
+            {
+                var allEventsInSpecificDay = state.Where(x => x.Day == day).ToList();
+                allEventsInSpecificDay = allEventsInSpecificDay.OrderBy(x => x.startTime).ToList();
+                //check if there is overlap
+                //hasOverlap = true;
+                for (int i = 0; i < allEventsInSpecificDay.Count; i++)
+                {
+                    for (int j = i+1; j < allEventsInSpecificDay.Count; j++)
+                    {
+                        if(allEventsInSpecificDay[i].Conflicts(allEventsInSpecificDay[j]))
+                        {
+                            hasOverlap = true;
+                        }
+                    }
+                }
+
+            }
+            return hasOverlap;
+        }
+
+        private double CalculateTotalSpareTime(List<Event> state,double roundTripWeight)
         {
             //double tempWeight = roundTripWeight; //initialise it with the time he has to go to the uni and back
             IEnumerable<DayOfWeek> values = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>(); //gets all days in Enumerable

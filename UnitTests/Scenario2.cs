@@ -72,14 +72,14 @@ namespace UnitTests
 
             mandatoryEvents.Add(mandatoryA);
 
-            var m_a = new LessonWithMultipleTimes(mathima_a,false);
-            var m_b = new LessonWithMultipleTimes(mathima_b_events,false);
+            var m_a = new LessonWithMultipleTimes(mathima_a, false);
+            var m_b = new LessonWithMultipleTimes(mathima_b_events, false);
 
 
             optionalEvents.Add(m_a);
             optionalEvents.Add(m_b);
 
-            var tuple= ApplicationLogic.Logic(mandatoryEvents, optionalEvents, 20);
+            var tuple = new ApplicationLogic().Logic(mandatoryEvents, optionalEvents, 20);
             var times = tuple.Item1;
             var memory = tuple.Item2;
         }

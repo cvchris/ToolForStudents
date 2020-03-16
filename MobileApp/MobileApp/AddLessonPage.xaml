@@ -34,7 +34,7 @@
             <Label Text="Ώρα λήξης"/>
             <TimePicker x:Name="finishTime" Format="hh:mm"/>
             <Button Text="Προσθήκη" Clicked="Button_Clicked"></Button>
-            <ListView x:Name="eventsList">
+            <ListView x:Name="eventsList" ItemTapped="eventsList_ItemTapped">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell Text="{Binding Day}" Detail="{Binding DateTimeFormat}"/>

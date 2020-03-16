@@ -143,5 +143,93 @@ namespace ConsoleApp1
             //we need to make sure that for each LessonWithMultipleTimes there is only one event in the final calendar
 
     */
+        /*
+            private static void checkForOverlapping()
+            {
+                //get by day.
+                IEnumerable<DayOfWeek> values = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>(); //gets all days in Enumerable
+                foreach (DayOfWeek day in values)
+                {
+                    var allEventsInSpecificDay = _allEvents.Where(x => x.Day == day).ToList();
+                    allEventsInSpecificDay = allEventsInSpecificDay.OrderBy(x => x.startTime).ToList();
+
+                    //not working, we could be having more that one overlapping
+
+                    //σωστος τροπος: για καθε event στην ημερα, τσεκαρε με ΟΛΑ τα υπολοιπα events εαν γίνεται καποιο overlapping... ισως ενας τροπος optimization είναι να μην κοιταει με τα προηγουμενα του (να το σιγουρεψω).
+
+                    //check for overlapping
+                    for (int i = 0; i < allEventsInSpecificDay.Count; i++)
+                    {
+                        foreach (var ev in allEventsInSpecificDay)
+                        {
+                            if (ev != allEventsInSpecificDay[i]) //we don't want to check with itself
+                            {
+                                if (ev.Conflicts(allEventsInSpecificDay[i]))
+                                {
+                                    //ev and allEventsInSpecificDay[i] conflict.
+
+
+                                    //check if either of them is non-fixed
+                                    if (allEventsInSpecificDay[i].IsFixed && ev.IsFixed)
+                                    {
+                                        throw new Exception("We have a problem because both are fixed.");
+                                    }
+                                    else
+                                    {
+                                        if (!allEventsInSpecificDay[i].IsFixed && !ev.IsFixed)
+                                        {
+                                            //TODO: both not fixed, find which is optimal to delete from the two
+                                        }
+
+                                        bool wasDeletedA = false;
+                                        if (!allEventsInSpecificDay[i].IsFixed)
+                                        {
+                                            wasDeletedA = deleteIfNoProblem(allEventsInSpecificDay[i].Id);
+                                        }
+
+                                        bool wasDeletedB = false;
+                                        if (!ev.IsFixed && !wasDeletedA) //meaning that the other one wasn't deleted. If it was deleted, problem solved.
+                                        {
+                                            wasDeletedB = deleteIfNoProblem(ev.Id);
+                                        }
+
+                                        if (!wasDeletedA && !wasDeletedB)
+                                        {
+                                            throw new Exception("We have a problem, both that are overlapping are not fixed and cannot be deleted.");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            /// <summary>
+            /// if it is not the only one appearence, we can delete it
+            /// </summary>
+            /// <returns>True if it was deleted</returns>
+            private static bool deleteIfNoProblem(int EventId)
+            {
+                var thisEvent = _allEvents.First(x => x.Id == EventId);
+
+                //check if this event has another appearence
+                var otherEventsFromSameLesson = _allEvents.Where(x => x.Lesson == thisEvent.Lesson).ToList();
+                if (otherEventsFromSameLesson.Count > 1)
+                {
+                    //check if the other ones are overlapping?
+                    //for now we will just delete this event because it is not required
+                    _allEvents.Remove(_allEvents.Single(x => x.Id == EventId));
+                    return true;
+                }
+                else
+                {
+                    //this event cannot be deleted because there are not other options
+                    return false;
+
+                }
+            }
+            */
     }
 }

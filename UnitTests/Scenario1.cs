@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Logic;
 using Xunit;
-
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace UnitTests
 {
     public class Scenario1
@@ -60,12 +60,12 @@ namespace UnitTests
             List<LessonWithMultipleTimes> lessonWithMultiples = new List<LessonWithMultipleTimes>();
             lessonWithMultiples.Add(new LessonWithMultipleTimes(ergastirioA,false));
 
-            var tuple = ApplicationLogic.Logic(ypoxreotika, lessonWithMultiples, 20);
+            var tuple = new ApplicationLogic().Logic(ypoxreotika, lessonWithMultiples, 20);
 
             var times = tuple.Item1;
             var memory = tuple.Item2;
 
-            
+            //check about the validity of the algorithm
 
         }
 
