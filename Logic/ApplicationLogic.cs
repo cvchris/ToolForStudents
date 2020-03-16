@@ -88,7 +88,7 @@ namespace Logic
             }
         }
 
-        private bool checkForOverLapping(List<Event> state)
+        public bool checkForOverLapping(List<Event> state)
         {
             bool hasOverlap = false;
             IEnumerable<DayOfWeek> days = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>(); //gets all days in Enumerable
